@@ -2,36 +2,42 @@
   "expo": {
     "name": "findu-app",
     "slug": "findu-app",
+    "owner": "raulez3104",
     "version": "1.0.0",
-
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-
-    "experiments": {
-      "tsconfigPaths": true
-    },
-
-    "plugins": [],
-
+    "scheme": "findu-app",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-
     "userInterfaceStyle": "light",
-
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
+      "bundleIdentifier": "com.raulez3104.findu",
       "supportsTablet": true
     },
     "android": {
+      "package": "com.raulez.findu",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+      
+    },
+    "experiments": {
+      "tsconfigPaths": true
+    },
+    "plugins": [],
+    "extra": {
+      "eas": {
+        "projectId": "22d0f6f7-b3da-4741-87e5-a659259465d9"
       }
     }
   }

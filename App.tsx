@@ -1,13 +1,11 @@
-import { ScreenContent } from 'components/ScreenContent';
-import { StatusBar } from 'expo-status-bar';
-
-import './global.css';
+import React from 'react';
+import { AuthProvider } from './src/context/AuthContext';
+import AppNavigator from '@/navigation/AppNavigator';
 
 export default function App() {
   return (
-    <>
-      <ScreenContent title="Home" path="App.tsx"></ScreenContent>
-      <StatusBar style="auto" />
-    </>
+    <AuthProvider>
+      <AppNavigator />
+    </AuthProvider>
   );
 }
