@@ -9,7 +9,7 @@ interface CategoryTabsProps {
 }
 
 const CategoryTabs: React.FC<CategoryTabsProps> = ({ selected, onSelect }) => {
-  const tabs: TabType[] = ['Todos', 'Biblioteca', 'Cafetería', 'Cursos'];
+  const tabs: TabType[] = ['Todos', 'Biblioteca', 'Cafetería', 'Aula','Laboratorio','Anfiteatro','Otros'];
 
   return (
     <ScrollView 
@@ -22,7 +22,7 @@ const CategoryTabs: React.FC<CategoryTabsProps> = ({ selected, onSelect }) => {
           key={tab}
           onPress={() => onSelect(tab)}
           className={`mr-3 px-6 py-3 rounded-full ${
-            selected === tab ? 'bg-cyan-400' : 'bg-white'
+            selected === tab ? 'bg-[#fb8500]' : 'bg-white'
           }`}
         >
           <Text className={`font-semibold ${

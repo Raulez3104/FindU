@@ -21,12 +21,12 @@ type LoginScreenProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 const GOOGLE_WEB_CLIENT_ID = '463861565017-sl974mbuokl4q7r27feoc46iht61d3b6.apps.googleusercontent.com';
 const GOOGLE_ANDROID_CLIENT_ID = '463861565017-0kc0pe8el7u8m1okotgcgm7k2bc130j8.apps.googleusercontent.com';
-const GOOGLE_IOS_CLIENT_ID = 'TU_IOS_CLIENT_ID.apps.googleusercontent.com';
+const GOOGLE_IOS_CLIENT_ID = '';
 const GOOGLE_EXPO_CLIENT_ID = '463861565017-n5ho9beaohbg59tlab57q3u0hh7025ef.apps.googleusercontent.com';
 
 const LoginScreen: React.FC = () => {
   const navigation = useNavigation<LoginScreenProp>();
-  const { login } = useAuth(); // ⚠️ usar login en lugar de setUser
+  const { login } = useAuth(); 
   const [loading, setLoading] = useState(false);
 
   const clientId =

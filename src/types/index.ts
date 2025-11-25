@@ -3,7 +3,7 @@ export interface LostItem {
   name: string;
   status: string;
   statusColor: string;
-  icon: string;
+  imageUrl: string;
 }
 
 export interface Location {
@@ -13,4 +13,4 @@ export interface Location {
   color: 'red' | 'green';
 }
 
-export type TabType = 'Todos' | 'Biblioteca' | 'Cafetería' | 'Cursos';
+export type TabType = 'Todos' | 'Biblioteca' | 'Cafetería' | 'Aula'|'Laboratorio'|'Anfiteatro'|'Otros';

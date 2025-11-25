@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -9,11 +9,12 @@ import HomeScreen from '@/screens/HomeScreen';
 import ReportScreen from '@/screens/ReportScreen';
 import ProfileScreen from '@/screens/ProfileScreen';
 import LoginScreen from '@/screens/LoginScreen';
+import ItemDetailsScreen from '@/screens/ItemDetailsScreen';
+import { useAuth } from '@/context/AuthContext';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-// ----- Tabs de la app -----
 function MyTabs() {
   return (
     <Tab.Navigator
@@ -47,7 +48,7 @@ function MyTabs() {
 
           return (
             <View className="flex-1 items-center justify-center">
-              <Icon name={iconName} size={25} color={focused ? '#22d3ee' : '#9CA3AF'} />
+              <Icon name={iconName} size={25} color={focused ? '#fb8500' : '#9CA3AF'} />
               <Text
                 className={`mt-1 w-16 text-center text-xs ${
                   focused ? 'font-semibold text-gray-950' : 'text-gray-500'
@@ -67,14 +68,29 @@ function MyTabs() {
   );
 }
 
-// ----- Stack principal -----
 export default function AppNavigator() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="#fb8500" />
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="AppTabs" component={MyTabs} />
-      </Stack.Navigator>
+      {user ? (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="AppTabs" component={MyTabs} />
+          <Stack.Screen name="ItemDetails" component={ItemDetailsScreen} />
+        </Stack.Navigator>
+      ) : (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Login" component={LoginScreen} />
+        </Stack.Navigator>
+      )}
     </NavigationContainer>
   );
 }
