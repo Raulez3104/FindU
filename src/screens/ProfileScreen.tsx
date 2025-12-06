@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity, Alert, Platform, Modal } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity, Alert, Platform, Modal, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
+import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 
 interface Report {
@@ -15,18 +16,39 @@ const ProfileScreen = ({ navigation }: any) => {
   const { user, logout } = useAuth();
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  useEffect(() => {
+  const fetchReports = useCallback(() => {
     if (user?.id) {
       axios
         .get(`http://localhost:3000/reports/user/${user.id}`)
         .then(res => setReports(res.data.reports))
         .catch(err => console.error('Error al obtener reportes:', err))
-        .finally(() => setLoading(false));
+        .finally(() => {
+          setLoading(false);
+          setRefreshing(false);
+        });
     }
-  }, [user]);
+  }, [user?.id]);
+
+  // Cargar reportes cuando se monta el componente
+  useEffect(() => {
+    fetchReports();
+  }, [fetchReports]);
+
+  // Recargar reportes cada vez que la pantalla recibe el foco
+  useFocusEffect(
+    useCallback(() => {
+      fetchReports();
+    }, [fetchReports])
+  );
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchReports();
+  };
 
   const handleLogout = () => {
     console.log('[Profile] handleLogout: pressed');
@@ -76,7 +98,10 @@ const ProfileScreen = ({ navigation }: any) => {
   };
 
   return (
-    <ScrollView className="flex-1 bg-white">
+    <ScrollView 
+      className="flex-1 bg-gray-50"
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#fb8500" />}
+    >
       {/* Modal para confirmación web */}
       <Modal visible={showConfirmModal} transparent animationType="fade" onRequestClose={() => setShowConfirmModal(false)}>
         <View className="flex-1 justify-center items-center bg-black/50">
@@ -148,35 +173,77 @@ const ProfileScreen = ({ navigation }: any) => {
 
       {/* Historial de reportes */}
       <View className="px-4 pb-24">
-        <Text className="text-xl font-bold text-gray-900 mb-4">Historial de Reportes</Text>
+        <View className="flex-row items-center justify-between mb-4">
+          <Text className="text-xl font-bold text-gray-900">Historial de Reportes</Text>
+          {reports.length > 0 && (
+            <View className="bg-orange-100 px-3 py-1 rounded-full">
+              <Text className="text-sm font-semibold text-[#fb8500]">{reports.length}</Text>
+            </View>
+          )}
+        </View>
 
         {loading ? (
-          <ActivityIndicator size="large" color="#22d3ee" />
+          <ActivityIndicator size="large" color="#fb8500" />
         ) : reports.length === 0 ? (
-          <Text className="text-gray-500">No tienes reportes todavía.</Text>
+          <View className="items-center justify-center py-12">
+            <Ionicons name="clipboard-outline" size={48} color="#cbd5e1" />
+            <Text className="text-gray-400 text-center mt-4 text-base">No tienes reportes todavía.</Text>
+            <TouchableOpacity 
+              onPress={() => navigation?.navigate('HomeScreen')}
+              className="mt-6 bg-[#fb8500] px-6 py-2 rounded-full"
+            >
+              <Text className="text-white font-semibold">Crear Reporte</Text>
+            </TouchableOpacity>
+          </View>
         ) : (
-          reports.map(report => (
-            <View key={report.id} className="bg-white rounded-2xl p-5 mb-3 flex-row items-center">
-              <View className="w-14 h-14 rounded-full bg-gray-100 items-center justify-center mr-4">
-                <Ionicons
-                  name={report.status === 'Encontrado' ? 'checkmark-circle' : 'alert-circle'}
-                  size={24}
-                  color={report.status === 'Encontrado' ? 'green' : 'red'}
-                />
-              </View>
-              <View className="flex-1">
-                <Text className="text-base font-semibold text-gray-900 mb-1">{report.title}</Text>
-                <Text
-                  className={`text-sm ${
-                    report.status === 'Encontrado' ? 'text-green-500' : 'text-red-500'
-                  }`}
+          <View className="space-y-3">
+            {reports.map((report, index) => (
+              <View 
+                key={report.id} 
+                className="bg-white rounded-xl p-4 flex-row items-center shadow-sm border-l-4"
+                style={{
+                  borderLeftColor: report.status === 'Encontrado' ? '#10b981' : '#ef4444',
+                }}
+              >
+                <View 
+                  className="w-12 h-12 rounded-full items-center justify-center mr-3"
+                  style={{
+                    backgroundColor: report.status === 'Encontrado' ? '#dcfce7' : '#fee2e2',
+                  }}
                 >
-                  {report.status}
-                </Text>
+                  <Ionicons
+                    name={report.status === 'Encontrado' ? 'checkmark-circle' : 'alert-circle'}
+                    size={28}
+                    color={report.status === 'Encontrado' ? '#10b981' : '#ef4444'}
+                  />
+                </View>
+                <View className="flex-1 mr-3">
+                  <Text className="text-base font-semibold text-gray-900 mb-1" numberOfLines={1}>
+                    {report.title}
+                  </Text>
+                  <View className="flex-row items-center">
+                    <Ionicons name="calendar-outline" size={12} color="#9ca3af" />
+                    <Text className="text-xs text-gray-500 ml-1">{report.date}</Text>
+                  </View>
+                </View>
+                <View 
+                  className="px-3 py-1 rounded-full"
+                  style={{
+                    backgroundColor: report.status === 'Encontrado' ? '#dcfce7' : '#fee2e2',
+                  }}
+                >
+                  <Text
+                    className="text-xs font-semibold"
+                    style={{
+                      color: report.status === 'Encontrado' ? '#10b981' : '#ef4444',
+                    }}
+                  >
+                    {report.status}
+                  </Text>
+                </View>
               </View>
-              <Text className="text-sm text-gray-400">{report.date}</Text>
-            </View>
-          ))
+            ))}
+          </View>
         )}
       </View>
     </ScrollView>

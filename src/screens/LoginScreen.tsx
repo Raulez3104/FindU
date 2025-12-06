@@ -110,19 +110,19 @@ const LoginScreen: React.FC = () => {
   return (
     <SafeAreaProvider>
       <View className="flex-1 justify-center items-center bg-white px-6">
-        <Text className="text-3xl font-bold mb-10">Bienvenido a FindU</Text>
+        <Text className="text-3xl font-bold mb-10">Bienvenido a Find-U</Text>
 
         <TouchableOpacity
           onPress={handleLogin}
           disabled={loading || !request}
-          className="flex-row items-center bg-red-500 px-6 py-3 rounded-lg"
+          className="flex-row items-center px-6 py-3 rounded-lg bg-[#fb8500]"
         >
           {loading ? (
             <ActivityIndicator color="white" />
           ) : (
             <>
               <Image
-                source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg' }}
+                source={{ uri: 'https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA' }}
                 className="w-6 h-6 mr-3"
               />
               <Text className="text-white text-lg font-semibold">

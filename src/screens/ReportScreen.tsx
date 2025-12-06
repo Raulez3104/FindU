@@ -12,7 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import { useAuth } from '@/context/AuthContext';
-import { showMessage } from 'react-native-flash-message'; // ✅ Import para mensajes visuales
+import { showMessage } from 'react-native-flash-message';
 
 const ReportScreen = ({ navigation }: any) => {
   const { user } = useAuth();
@@ -20,7 +20,9 @@ const ReportScreen = ({ navigation }: any) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
-  const [locationType, setLocationType] = useState<'biblioteca'|'aula'|'laboratorio'|'anfiteatro'|'cafeteria'|''>('');
+  const [locationType, setLocationType] = useState<
+    'biblioteca' | 'aula' | 'laboratorio' | 'anfiteatro' | 'cafeteria' | ''
+  >('');
   const [floor, setFloor] = useState<number | null>(null);
   const [classroom, setClassroom] = useState<string | null>(null);
   const [contact, setContact] = useState(user?.email || '');
@@ -28,6 +30,14 @@ const ReportScreen = ({ navigation }: any) => {
   const [loading, setLoading] = useState(false);
 
   const isSubmitting = useRef(false);
+
+  // Mapeo de aulas por piso
+  const floorMap: Record<number, number[]> = {
+    1: [101,102,103,104,105,106,107,108,109,110,111,112],
+    2: [201,202,203,204,205,206,207,208,209,210,211],
+    3: [301,302,303,304,305,306,307,308,309,310],
+    4: [401,403,404,406,407,411], // números no secuenciales
+  };
 
   const pickImage = async () => {
     const { status: permStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -62,7 +72,6 @@ const ReportScreen = ({ navigation }: any) => {
   };
 
   const handleSubmit = async () => {
-    // --- VALIDACIONES ---
     if (isSubmitting.current || loading) {
       showMessage({ message: 'Espera un momento', description: 'Ya hay un envío en proceso...', type: 'info' });
       return;
@@ -108,7 +117,6 @@ const ReportScreen = ({ navigation }: any) => {
       setLoading(false);
 
       showMessage({ message: '¡Éxito!', description: res.data.message || 'Reporte enviado correctamente.', type: 'success' });
-
       resetForm();
       navigation.goBack();
     } catch (err: any) {
@@ -131,6 +139,7 @@ const ReportScreen = ({ navigation }: any) => {
 
   return (
     <ScrollView className="flex-1 bg-white">
+      {/* Header */}
       <View className="bg-white px-4 py-3 flex-row items-center border-b border-gray-200">
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back" size={28} color="#000" />
@@ -140,6 +149,7 @@ const ReportScreen = ({ navigation }: any) => {
       </View>
 
       <View className="p-4">
+        {/* Imagen */}
         <TouchableOpacity
           onPress={pickImage}
           disabled={loading}
@@ -155,6 +165,7 @@ const ReportScreen = ({ navigation }: any) => {
           )}
         </TouchableOpacity>
 
+        {/* Estado */}
         <View className="mb-6">
           <Text className="text-base text-gray-600 font-medium mb-3">Estado del objeto</Text>
           <View className="flex-row space-x-4">
@@ -208,7 +219,7 @@ const ReportScreen = ({ navigation }: any) => {
           />
         </View>
 
-        {/* Ubicación: opciones predefinidas */}
+        {/* Ubicación */}
         <View className="mb-6">
           <Text className="text-base text-gray-600 font-medium mb-3">Ubicación</Text>
           <View className="flex-row flex-wrap">
@@ -235,13 +246,16 @@ const ReportScreen = ({ navigation }: any) => {
                   }
                 }}
                 disabled={loading}
-                className={`px-4 py-2 mr-2 mb-2 rounded-2xl border ${locationType === opt.key ? 'bg-[#fb8500] border-[#fb8500]' : 'border-gray-300 bg-white'}`}
+                className={`px-4 py-2 mr-2 mb-2 rounded-2xl border ${
+                  locationType === opt.key ? 'bg-[#fb8500] border-[#fb8500]' : 'border-gray-300 bg-white'
+                }`}
               >
                 <Text className={locationType === opt.key ? 'text-white' : 'text-gray-700'}>{opt.label}</Text>
               </TouchableOpacity>
             ))}
           </View>
 
+          {/* Selector de piso y aula */}
           {locationType === 'aula' && (
             <View className="mt-4">
               <Text className="text-sm text-gray-600 mb-2">Selecciona el piso</Text>
@@ -254,7 +268,9 @@ const ReportScreen = ({ navigation }: any) => {
                       setClassroom(null);
                       setLocation('');
                     }}
-                    className={`px-4 py-2 mr-2 rounded-2xl border ${floor === p ? 'bg-[#fb8500] border-[#fb8500]' : 'border-gray-300 bg-white'}`}
+                    className={`px-4 py-2 mr-2 rounded-2xl border ${
+                      floor === p ? 'bg-[#fb8500] border-[#fb8500]' : 'border-gray-300 bg-white'
+                    }`}
                   >
                     <Text className={floor === p ? 'text-white' : 'text-gray-700'}>Piso {p}</Text>
                   </TouchableOpacity>
@@ -265,27 +281,20 @@ const ReportScreen = ({ navigation }: any) => {
                 <View>
                   <Text className="text-sm text-gray-600 mb-2">Selecciona el número de aula</Text>
                   <View className="flex-row flex-wrap">
-                    {(() => {
-                      let start = 101, end = 112;
-                      if (floor === 1) { start = 101; end = 112; }
-                      if (floor === 2) { start = 201; end = 210; }
-                      if (floor === 3) { start = 301; end = 312; }
-                      if (floor === 4) { start = 401; end = 412; }
-                      const items = [] as number[];
-                      for (let n = start; n <= end; n++) items.push(n);
-                      return items.map(n => (
-                        <TouchableOpacity
-                          key={n}
-                          onPress={() => {
-                            setClassroom(String(n));
-                            setLocation(`Aula ${n}`);
-                          }}
-                          className={`px-3 py-2 mr-2 mb-2 rounded-2xl border ${classroom === String(n) ? 'bg-[#fb8500] border-[#fb8500]' : 'border-gray-300 bg-white'}`}
-                        >
-                          <Text className={classroom === String(n) ? 'text-white' : 'text-gray-700'}>{n}</Text>
-                        </TouchableOpacity>
-                      ));
-                    })()}
+                    {(floorMap[floor] || []).map(n => (
+                      <TouchableOpacity
+                        key={n}
+                        onPress={() => {
+                          setClassroom(String(n));
+                          setLocation(`Aula ${n}`);
+                        }}
+                        className={`px-3 py-2 mr-2 mb-2 rounded-2xl border ${
+                          classroom === String(n) ? 'bg-[#fb8500] border-[#fb8500]' : 'border-gray-300 bg-white'
+                        }`}
+                      >
+                        <Text className={classroom === String(n) ? 'text-white' : 'text-gray-700'}>{n}</Text>
+                      </TouchableOpacity>
+                    ))}
                   </View>
                 </View>
               )}
@@ -313,17 +322,14 @@ const ReportScreen = ({ navigation }: any) => {
           />
         </View>
 
+        {/* Botón enviar */}
         <TouchableOpacity
           onPress={handleSubmit}
           activeOpacity={0.7}
-          className={`rounded-full py-5 items-center mb-24 ${
-            loading ? 'bg-gray-400' : 'bg-[#fb8500]'
-          }`}
+          className={`rounded-full py-5 items-center mb-24 ${loading ? 'bg-gray-400' : 'bg-[#fb8500]'}`}
           disabled={loading}
         >
-          <Text className="text-white text-lg font-bold">
-            {loading ? 'Enviando...' : 'Enviar Reporte'}
-          </Text>
+          <Text className="text-white text-lg font-bold">{loading ? 'Enviando...' : 'Enviar Reporte'}</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
