@@ -1,0 +1,80 @@
+# -------------------------
+# JetBrains IDEs
+# -------------------------
+.idea/
+*.iml
+*.iws
+out/
+
+# -------------------------
+# Node.js
+# -------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+pnpm-lock.yaml
+.pnpm-store/
+.npm/
+.env
+.env.*.local
+*.tsbuildinfo
+.cache/
+.parcel-cache/
+
+# -------------------------
+# React Native / Expo
+# -------------------------
+# Expo
+.expo/
+__generated__/
+
+# Builds y compilaciones
+android/
+ios/
+build/
+**/build/
+
+# Gradle
+.gradle/
+.gradle-taskname-cache
+gradle-app.setting
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+output.json
+gradle-wrapper.jar
+gradle-wrapper.properties
+
+# Xcode / macOS
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+.DS_Store
+
+# Otros archivos temporales
+.fuse_hidden*
+.Trash-*
+.directory
+*~
+
+# Buck (opcional si usas Buck)
+buck-out/
+.buckconfig.local
+.buckd/
+.buckversion
+.fakebuckversion
+
+# Logs
+*.log
+*.hprof
+
+# Google Services
+google-services.json
+
+# Keystore
+*.jks
+*.keystore
