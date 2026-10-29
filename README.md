@@ -5,7 +5,7 @@ Plataforma universitaria para gestionar objetos perdidos y encontrados. Este rep
 ## Estructura
 
 ```text
-FindU/          Aplicación móvil React Native + Expo
+findu-mobile/   Aplicación móvil React Native + Expo
 findu-admin/    Panel administrativo React + Vite
 findu-backend/  API Express + PostgreSQL
 ```
@@ -25,7 +25,7 @@ Las credenciales y variables locales nunca deben publicarse.
 Ejecuta por separado:
 
 ```powershell
-cd FindU
+cd findu-mobile
 npm ci
 
 cd ..\findu-admin
@@ -39,7 +39,7 @@ npm ci
 
 ### Aplicación móvil
 
-Copia `FindU/.env.example` como `FindU/.env` y completa las variables necesarias. En un dispositivo físico, `EXPO_PUBLIC_API_URL` debe apuntar a una dirección del backend accesible desde el dispositivo; `localhost` corresponde al propio teléfono.
+Copia `findu-mobile/.env.example` como `findu-mobile/.env` y completa las variables necesarias. En un dispositivo físico, `EXPO_PUBLIC_API_URL` debe apuntar a una dirección del backend accesible desde el dispositivo; `localhost` corresponde al propio teléfono.
 
 ### Panel administrativo
 
@@ -69,7 +69,7 @@ El backend utiliza el puerto `3000` por defecto.
 ## Verificación
 
 ```powershell
-# Móvil, desde FindU/
+# Móvil, desde findu-mobile/
 npm run lint
 npm run typecheck
 
