@@ -1,0 +1,32 @@
+ {
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "rootDir": ".",
+    "outDir": "dist",
+    "noEmit": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": ["node", "jest"]
+  },
+  "ts-node": {
+    "files": true
+  },
+  "include": [
+    "app.ts",
+    "index.ts",
+    "config/**/*.ts",
+    "controllers/**/*.ts",
+    "middleware/**/*.ts",
+    "routes/**/*.ts",
+    "services/**/*.ts",
+    "tests/**/*.ts",
+    "types/modelos.ts",
+    "types/**/*.d.ts",
+    "jest.config.ts"
+  ],
+  "exclude": ["node_modules", "dist", "uploads"]
+}
