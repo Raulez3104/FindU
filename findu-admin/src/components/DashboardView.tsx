@@ -9,6 +9,8 @@ function obtenerVarianteBadge(estado: EstadoReporte): 'exito' | 'advertencia' | 
   switch (estado) {
     case 'Perdido':
       return 'peligro';
+    case 'Encontrado':
+      return 'advertencia';
     case 'En servicios':
       return 'advertencia';
     case 'Devuelto':
@@ -94,6 +96,7 @@ const DashboardView: React.FC = () => {
 
   const tarjetasEstados = [
     { titulo: 'Perdidos', valor: porEstado['Perdido'] ?? 0, color: 'text-red-600' },
+    { titulo: 'Encontrados', valor: porEstado['Encontrado'] ?? 0, color: 'text-amber-600' },
     { titulo: 'En Servicios', valor: porEstado['En servicios'] ?? 0, color: 'text-purple-600' },
     { titulo: 'Devueltos', valor: porEstado['Devuelto'] ?? 0, color: 'text-green-600' },
     { titulo: 'Donados', valor: porEstado['Donado'] ?? 0, color: 'text-teal-600' },
@@ -117,7 +120,7 @@ const DashboardView: React.FC = () => {
 
       <div>
         <h2 className="text-xl font-bold text-gray-800 mb-4">Reportes por Estado</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
           {tarjetasEstados.map((item, idx) => (
             <Card key={idx}>
               <div className="space-y-1">

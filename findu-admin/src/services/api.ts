@@ -24,6 +24,10 @@ export class ErrorApi extends Error {
   get esPeticionInvalida(): boolean {
     return this.status === 400;
   }
+
+  get esConflicto(): boolean {
+    return this.status === 409;
+  }
 }
 
 export type Manejador401 = () => void;
@@ -70,8 +74,10 @@ export async function peticionHttp<T>(
     cabeceras.Authorization = `Bearer ${opciones.token.trim()}`;
   }
 
-  let body: string | undefined;
-  if (opciones.cuerpo !== undefined) {
+  let body: BodyInit | undefined;
+  if (opciones.cuerpo instanceof FormData) {
+    body = opciones.cuerpo;
+  } else if (opciones.cuerpo !== undefined) {
     cabeceras['Content-Type'] = 'application/json';
     body = JSON.stringify(opciones.cuerpo);
   }
@@ -126,5 +132,14 @@ export const clienteHttp = Object.freeze({
   },
   post<T>(ruta: string, cuerpo?: unknown, token?: string | null): Promise<T> {
     return peticionHttp<T>(ruta, { metodo: 'POST', cuerpo, token });
+  },
+  postMultipart<T>(ruta: string, cuerpo: FormData, token?: string | null): Promise<T> {
+    return peticionHttp<T>(ruta, { metodo: 'POST', cuerpo, token });
+  },
+  patch<T>(ruta: string, cuerpo?: unknown, token?: string | null): Promise<T> {
+    return peticionHttp<T>(ruta, { metodo: 'PATCH', cuerpo, token });
+  },
+  put<T>(ruta: string, cuerpo?: unknown, token?: string | null): Promise<T> {
+    return peticionHttp<T>(ruta, { metodo: 'PUT', cuerpo, token });
   },
 });

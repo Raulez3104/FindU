@@ -10,6 +10,7 @@ import catalogRoutes = require('./routes/catalogRoutes');
 import errorHandler = require('./middleware/errorHandler');
 
 const { rutasCategorias, rutasUbicaciones } = catalogRoutes;
+
 const app = createServer();
 
 app.use('/reportes', reportRoutes);

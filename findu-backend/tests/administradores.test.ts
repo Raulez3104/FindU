@@ -1318,28 +1318,22 @@ describe('regresiones públicas, legacy y mutaciones bloqueadas (T7)', () => {
     expect(pool.query).not.toHaveBeenCalled();
   });
 
-  // --- Mutaciones bloqueadas con 403 uniforme ---
-  test('PUT /reportes/:id/status responde 403 sin efectos', async () => {
+  // --- Mutaciones legacy retiradas con 404 estricto ---
+  test('PUT /reportes/:id/status responde 404 sin efectos', async () => {
     const respuesta = await request(app)
       .put('/reportes/1/status')
       .send({ estado: 'devuelto' });
 
-    expect(respuesta.status).toBe(403);
-    expect(respuesta.body).toEqual({
-      message: 'Operación administrativa no habilitada',
-    });
+    expect(respuesta.status).toBe(404);
     expect(pool.query).not.toHaveBeenCalled();
   });
 
-  test('PUT /reportes/:id/active responde 403 sin efectos', async () => {
+  test('PUT /reportes/:id/active responde 404 sin efectos', async () => {
     const respuesta = await request(app)
       .put('/reportes/1/active')
       .send({ activo: false });
 
-    expect(respuesta.status).toBe(403);
-    expect(respuesta.body).toEqual({
-      message: 'Operación administrativa no habilitada',
-    });
+    expect(respuesta.status).toBe(404);
     expect(pool.query).not.toHaveBeenCalled();
   });
 

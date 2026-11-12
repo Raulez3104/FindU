@@ -131,7 +131,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   onChange={(e) => setCorreo(e.target.value)}
                   disabled={cargando}
                   required
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-950/60 border border-slate-800 rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-[#fb8500] focus:ring-2 focus:ring-[#fb8500]/25 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                  style={{ color: '#ffffff' }}
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-950/60 border border-slate-800 rounded-xl text-white placeholder-slate-400 placeholder:text-slate-400 text-sm focus:outline-none focus:border-[#fb8500] focus:ring-2 focus:ring-[#fb8500]/25 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                   placeholder="admin@ejemplo.edu"
                 />
               </div>
@@ -160,7 +161,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   onChange={(e) => setContrasena(e.target.value)}
                   disabled={cargando}
                   required
-                  className="w-full pl-10 pr-11 py-2.5 bg-slate-950/60 border border-slate-800 rounded-xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-[#fb8500] focus:ring-2 focus:ring-[#fb8500]/25 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                  style={{ color: '#ffffff' }}
+                  className="w-full pl-10 pr-11 py-2.5 bg-slate-950/60 border border-slate-800 rounded-xl text-white placeholder-slate-400 placeholder:text-slate-400 text-sm focus:outline-none focus:border-[#fb8500] focus:ring-2 focus:ring-[#fb8500]/25 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                   placeholder="••••••••••••"
                 />
                 <button

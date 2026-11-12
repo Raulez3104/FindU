@@ -2,6 +2,7 @@ import type { NextFunction, Request, Response } from 'express';
 
 import * as adminService from '../services/adminService';
 import * as reportService from '../services/reportService';
+import * as servicioOperaciones from '../services/servicioOperacionesReportes';
 
 async function login(req: Request, res: Response, next: NextFunction) {
   const { correo, contrasena } = (req.body || {}) as {
@@ -77,9 +78,221 @@ async function obtenerReportePorId(
   }
 }
 
+async function crearReporte(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const autor = { tipo: 'admin' as const, id: req.administrador!.id };
+    const imagenPath = req.file?.filename;
+    const resultado = await reportService.crearReporte({
+      autor,
+      datos: req.body,
+      imagenPath,
+    });
+
+    return res.status(201).json({
+      message: 'Reporte creado exitosamente',
+      id: resultado.id,
+      imagen: resultado.imagen,
+      imageUrl: `/uploads/${resultado.imagen}`,
+      estado: 'En servicios',
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+async function recepcionarReporte(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const id = Number(req.params.id);
+    const actor = req.administrador!;
+    const resultado = await servicioOperaciones.ejecutarOperacionReporte({
+      id,
+      operacion: 'recepcion',
+      actor,
+      payload: req.body,
+    });
+
+    return res.status(200).json(resultado);
+  } catch (error) {
+    return next(error);
+  }
+}
+
+async function devolverReporte(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const id = Number(req.params.id);
+    const actor = req.administrador!;
+    const resultado = await servicioOperaciones.ejecutarOperacionReporte({
+      id,
+      operacion: 'devolucion',
+      actor,
+      payload: req.body,
+    });
+
+    return res.status(200).json(resultado);
+  } catch (error) {
+    return next(error);
+  }
+}
+
+async function cerrarReportePerdido(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const id = Number(req.params.id);
+    const actor = req.administrador!;
+    const resultado = await servicioOperaciones.ejecutarOperacionReporte({
+      id,
+      operacion: 'cierre',
+      actor,
+      payload: req.body,
+    });
+
+    return res.status(200).json(resultado);
+  } catch (error) {
+    return next(error);
+  }
+}
+
+async function donarReporte(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const id = Number(req.params.id);
+    const actor = req.administrador!;
+    const resultado = await servicioOperaciones.ejecutarOperacionReporte({
+      id,
+      operacion: 'donacion',
+      actor,
+      payload: req.body,
+    });
+
+    return res.status(200).json(resultado);
+  } catch (error) {
+    return next(error);
+  }
+}
+
+async function editarReporte(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const id = Number(req.params.id);
+    const actor = req.administrador!;
+    const resultado = await servicioOperaciones.ejecutarOperacionReporte({
+      id,
+      operacion: 'edicion',
+      actor,
+      payload: req.body,
+    });
+
+    return res.status(200).json(resultado);
+  } catch (error) {
+    return next(error);
+  }
+}
+
+async function archivarReporte(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const id = Number(req.params.id);
+    const actor = req.administrador!;
+    const resultado = await servicioOperaciones.ejecutarOperacionReporte({
+      id,
+      operacion: 'archivo',
+      actor,
+      payload: req.body,
+    });
+
+    return res.status(200).json(resultado);
+  } catch (error) {
+    return next(error);
+  }
+}
+
+async function reactivarReporte(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const id = Number(req.params.id);
+    const actor = req.administrador!;
+    const resultado = await servicioOperaciones.ejecutarOperacionReporte({
+      id,
+      operacion: 'reactivacion',
+      actor,
+      payload: req.body,
+    });
+
+    return res.status(200).json(resultado);
+  } catch (error) {
+    return next(error);
+  }
+}
+
+async function obtenerTrazaReporte(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const id = Number(req.params.id);
+    const traza = await servicioOperaciones.consultarTrazaReporte(id);
+    return res.status(200).json(traza);
+  } catch (error) {
+    return next(error);
+  }
+}
+
+async function obtenerCandidatosCierre(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const id = Number(req.params.id);
+    const busqueda = typeof req.query.busqueda === 'string' ? req.query.busqueda : undefined;
+    const candidatos = await servicioOperaciones.consultarCandidatosCierre(id, busqueda);
+    return res.status(200).json(candidatos);
+  } catch (error) {
+    return next(error);
+  }
+}
+
 export {
+  archivarReporte,
+  cerrarReportePerdido,
+  crearReporte,
+  devolverReporte,
+  donarReporte,
+  editarReporte,
   login,
+  obtenerCandidatosCierre,
   obtenerEstadisticas,
   obtenerReportePorId,
   obtenerReportes,
+  obtenerTrazaReporte,
+  reactivarReporte,
+  recepcionarReporte,
 };

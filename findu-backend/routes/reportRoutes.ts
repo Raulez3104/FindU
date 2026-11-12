@@ -11,7 +11,5 @@ router.get('/', reportController.obtenerTodos);
 router.get('/stats', reportController.obtenerEstadisticas);
 router.get('/usuario/:usuarioId', autenticar, reportController.obtenerPorUsuario);
 router.get('/:id', reportController.obtenerPorId);
-router.put('/:id/active', reportController.actualizarActivo);
-router.put('/:id/status', reportController.actualizarEstado);
 
 export = router;

@@ -7,6 +7,7 @@ import type {
   AltaReporteResuelta,
   AutorReporte,
   DatosAltaReporte,
+  EstadoPresentado,
   EstadoReporte,
   FilaConteoEstado,
   FilaEstadoReporte,
@@ -147,6 +148,14 @@ async function crearReporte(
       INSERT INTO historial (reporte_id, accion, valor_anterior, valor_nuevo, realizado_por, tipo_realizado_por)
       VALUES ($1, 'creacion', NULL, $2, $3, $4)
     `, [id, alta.estado, alta.autor.id, alta.autor.tipo]);
+
+    if (alta.autor.tipo === 'admin') {
+      await client.query(`
+        INSERT INTO registro_administradores (administrador_id, accion, tabla_destino, id_destino, detalles)
+        VALUES ($1, 'creacion_reporte_administrativo', 'reportes', $2, NULL)
+      `, [alta.autor.id, id]);
+    }
+
     return { id, imagen: alta.imagen };
   });
 }

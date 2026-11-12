@@ -81,20 +81,10 @@ function obtenerEstadisticas(_req: Request, res: Response) {
     });
 }
 
-function actualizarEstado(_req: Request, res: Response) {
-  return res.status(403).json({ message: 'Operación administrativa no habilitada' });
-}
-
-function actualizarActivo(_req: Request, res: Response) {
-  return res.status(403).json({ message: 'Operación administrativa no habilitada' });
-}
-
 export {
   crear,
   obtenerTodos,
   obtenerPorUsuario,
   obtenerPorId,
   obtenerEstadisticas,
-  actualizarEstado,
-  actualizarActivo,
 };

@@ -349,29 +349,15 @@ describe('Multer: MIME y extensión exactos; campo image y límite existentes', 
   });
 });
 
-describe('T7: rutas administrativas deshabilitadas', () => {
-  test.each(['status', 'active'].flatMap((ruta) => ['123', 'no-entero'].flatMap((id) => [undefined, {}, { estado: 'devuelto', activo: true, administrador_id: 1 }, { status: 'entregado', is_active: 'incorrecto' }].map((cuerpo) => [ruta, id, cuerpo]))))('%s/%s con %j → 403 uniforme sin servicios ni BD', async (ruta, id, cuerpo) => {
+describe('rutas administrativas legacy retiradas', () => {
+  test.each(['status', 'active'].flatMap((ruta) => ['123', 'no-entero'].flatMap((id) => [undefined, {}, { estado: 'devuelto', activo: true, administrador_id: 1 }, { status: 'entregado', is_active: 'incorrecto' }].map((cuerpo) => [ruta, id, cuerpo]))))('%s/%s con %j → 404 uniforme sin servicios ni BD', async (ruta, id, cuerpo) => {
     const servicioEspiable = servicio as unknown as Record<string, (...args: never[]) => unknown>;
     const spies = Object.keys(servicioEspiable).filter((clave) => typeof servicioEspiable[clave] === 'function').map((clave) => jest.spyOn(servicioEspiable, clave));
     let solicitud = request(app).put(`/reportes/${id}/${ruta}`);
     if (cuerpo !== undefined) solicitud = solicitud.send(cuerpo);
     const res = await solicitud;
-    expect(res.status).toBe(403);
-    expect(res.body).toEqual({ message: 'Operación administrativa no habilitada' });
+    expect(res.status).toBe(404);
     for (const spy of spies) expect(spy).not.toHaveBeenCalled();
-    expect(pool.query).not.toHaveBeenCalled();
-    expect(pool.connect).not.toHaveBeenCalled();
-  });
-
-  test.each(['actualizarEstado', 'actualizarActivo'] as const)('%s no lee cuerpo ni parámetros', (nombre) => {
-    const controlador = require('../controllers/reportController') as typeof import('../controllers/reportController');
-    // Dobles parciales deliberados: solo ejercitan que el controlador no lea req.
-    const req = {} as unknown as Request;
-    for (const clave of ['body', 'params']) Object.defineProperty(req, clave, { get() { throw new Error(`No leer ${clave}`); } });
-    const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as import('express').Response;
-    controlador[nombre](req, res);
-    expect(res.status).toHaveBeenCalledWith(403);
-    expect(res.json).toHaveBeenCalledWith({ message: 'Operación administrativa no habilitada' });
     expect(pool.query).not.toHaveBeenCalled();
     expect(pool.connect).not.toHaveBeenCalled();
   });
